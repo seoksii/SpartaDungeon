@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 /// [Author : Seoksii]
 /// 인스턴스마다 부여된 고유한 코드로 해당 인스턴스를 찾을 수 있는 자료구조 입니다.
 /// </summary>
-public class CodeInstanceContainer<T>
+public class IDContainer<T>
 {
     private int _capacity = 1000;
     /// <summary>
@@ -41,12 +41,12 @@ public class CodeInstanceContainer<T>
     /// <summary>
     /// 현재 할당 가능한 아이템 코드 중 가장 낮은 값을 반환하는 스택입니다.
     /// </summary>
-    private Stack<int> AvailableCodes = new Stack<int>();
+    private Stack<int> AvailableIDs = new Stack<int>();
 
-    public CodeInstanceContainer()
+    public IDContainer()
     {
         for (int i = 1000 - 1; i >= 0; i--)
-            AvailableCodes.Push(i);
+            AvailableIDs.Push(i);
     }
 
     /// <summary>
@@ -56,14 +56,14 @@ public class CodeInstanceContainer<T>
     {
         int code;
 
-        if (AvailableCodes.Count <= 0)
+        if (AvailableIDs.Count <= 0)
         {
             code = Capacity;
             this[code] = instance;
             return code;
         }
         // AvailableCodes.Count > 0
-        code = AvailableCodes.Pop();
+        code = AvailableIDs.Pop();
         this[code] = instance;
 
         return code;
@@ -74,15 +74,15 @@ public class CodeInstanceContainer<T>
         if (code < 0) throw new InvalidOperationException();
         if (code >= Capacity) throw new InvalidOperationException();
 
-        if (AvailableCodes.Count <= 0) AvailableCodes.Push(code);
+        if (AvailableIDs.Count <= 0) AvailableIDs.Push(code);
         else
         {
             Stack<int> tmpStack = new Stack<int>();
-            while (AvailableCodes.Count > 0 && AvailableCodes.Peek() > code)
-                tmpStack.Push(AvailableCodes.Pop());
-            AvailableCodes.Push(code);
+            while (AvailableIDs.Count > 0 && AvailableIDs.Peek() > code)
+                tmpStack.Push(AvailableIDs.Pop());
+            AvailableIDs.Push(code);
             while (tmpStack.Count > 0)
-                AvailableCodes.Push(tmpStack.Pop());
+                AvailableIDs.Push(tmpStack.Pop());
         }
     }
 
@@ -93,14 +93,14 @@ public class CodeInstanceContainer<T>
         Array.Resize<T>(ref _data, (int)capacity);
 
         Stack<int> tmpStack = new Stack<int>();
-        while (AvailableCodes.Count > 0)
-            tmpStack.Push(AvailableCodes.Pop());
+        while (AvailableIDs.Count > 0)
+            tmpStack.Push(AvailableIDs.Pop());
        
         for (int i = capacity - 1; i >= Capacity; --i)
-            AvailableCodes.Push(i);
+            AvailableIDs.Push(i);
         
         while (tmpStack.Count > 0)
-            AvailableCodes.Push(tmpStack.Pop());
+            AvailableIDs.Push(tmpStack.Pop());
 
         Capacity = capacity;
     }
