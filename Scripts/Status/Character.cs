@@ -34,9 +34,10 @@ public class Character
     public void EquipItem(int idx)
     {
         Inventory.EquipItem(idx);
-        
+
+        AtkByItem = 0;
         if (Inventory.ItemOnEquip.ContainsKey(ItemType.WEAPON))
-            AtkByItem = Inventory[Inventory.ItemOnEquip[ItemType.WEAPON]].ItemStat;
+            AtkByItem += Inventory[Inventory.ItemOnEquip[ItemType.WEAPON]].ItemStat;
         DefByItem = 0;
         if (Inventory.ItemOnEquip.ContainsKey(ItemType.ARMOR))
             DefByItem += Inventory[Inventory.ItemOnEquip[ItemType.ARMOR]].ItemStat;
